@@ -34,13 +34,19 @@ export async function appendFilesToListTxt() {
   }
 }
 
-// { start: "00:01:15.800", end: "00:04:19.000" },
+/**
+ * Format hh:mm:ss.ms to seconds.milliseconds
+ * @param {Object} { start: "hh:mm:ss.ms", end: "hh:mm:ss.ms" }
+ * @returns {String} "ss.ms"
+ */
 export function formatedTimeToSeconds({ start, end }) {
   const [startHour, startMinutes, startSeconds] = start.split(':')
   let [startSec, startMiliseconds] = startSeconds.split('.')
+  startMiliseconds = startMiliseconds || '000'
 
   const [endHour, endMinutes, endSeconds] = end.split(':')
   let [endSec, endMiliseconds] = endSeconds.split('.')
+  endMiliseconds = endMiliseconds || '000'
 
   const hoursToMs = hours => Number(hours) * 60 * 60 * 1000
   const minutesToMs = minutes => Number(minutes) * 60 * 1000
