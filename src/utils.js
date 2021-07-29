@@ -1,45 +1,15 @@
-import state from './state.js'
-import { appendFile, open } from 'fs/promises'
-import path from 'path'
+import util from 'util'
+import { exec } from 'child_process'
 
-export async function createParts() {
-  const __dirname = path.resolve()
-
-  state.cuts.map((cut, index) => {
-    state.outputFiles.push(__dirname + `/part${index}.mp4`)
-  })
-}
-
-async function clearFile() {
-  let filehandle = null
-  try {
-    filehandle = await open(state.txtFile, 'r+')
-    await filehandle.truncate(0)
-  } finally {
-    filehandle?.close()
-  }
-}
-
-async function addTextLine(line) {
-  await appendFile(state.txtFile, `file '${line}'\n`)
-  console.log(`${line} adicionado ao ${state.txtFile}`)
-  return
-}
-
-export async function appendFilesToListTxt() {
-  await clearFile()
-
-  for (let i = 0; i < state.outputFiles.length; i++) {
-    await addTextLine(state.outputFiles[i])
-  }
-}
+export const execAsync = util.promisify(exec)
 
 /**
  * Format hh:mm:ss.ms to seconds.milliseconds
- * @param {Object} { start: "hh:mm:ss.ms", end: "hh:mm:ss.ms" }
+ * @param {String} start  "hh:mm:ss.ms"
+ * @param {String} end "hh:mm:ss.ms"
  * @returns {String} "ss.ms"
  */
-export function formatedTimeToSeconds({ start, end }) {
+export function toSeconds(start, end) {
   const [startHour, startMinutes, startSeconds] = start.split(':')
   let [startSec, startMiliseconds] = startSeconds.split('.')
   startMiliseconds = startMiliseconds || '000'

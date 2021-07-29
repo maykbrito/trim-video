@@ -1,9 +1,15 @@
 export default {
-  txtFile: '/Users/starter/Github/myenv/scripts/videos/trim/mylist.txt',
-  cuts: [
-    { start: '00:00:02.600', end: '00:27:11.030' },
-    { start: '00:28:15.200', end: '00:34:47.090' },
+  // to split the video into pieces [start, end]
+  intervals: [
+    ['00:00:13.800', '00:02:40:000'],
+    ['00:03:04.000', '00:05:44:000'],
+    ['00:06:13.500', '00:10:35.200'],
+    ['00:10:53.000', '00:27:45.000'],
+    ['00:29:20.000', '00:34:33.400'],
+    ['00:35:39.300', '00:50:30.500'],
+    ['00:50:38.400', '00:50:40.200']
   ],
-  input: "'/Users/starter/Movies/2021-05-30_15-01-14.mp4'",
-  outputFiles: []
+  // the input file to be processed
+  input: '/Users/starter/Movies/2021-07-26_12-35-57.mp4',
+  concat: false // if it's true, it will concat all the files into one
 }

@@ -1,4 +1,3 @@
-import state from './state.js'
 import inquirer from 'inquirer'
 
 const questions = {
@@ -23,12 +22,12 @@ const questions = {
     {
       type: 'input',
       name: 'startTimeToCut',
-      message: 'Cut at (start): 00:00:00.000'
+      message: 'Initial interval: 00:00:00.000'
     },
     {
       type: 'input',
       name: 'endTimeToCut',
-      message: 'Cut to (end): 00:00:15.000'
+      message: 'Final interval: 00:00:15.000'
     },
     {
       type: 'confirm',
@@ -36,31 +35,44 @@ const questions = {
       message: 'Want to cut more parts? (enter for NO)',
       default: false
     }
+  ],
+
+  concatenateFiles: [
+    {
+      type: 'confirm',
+      name: 'concat',
+      message: 'Concatenate files? (NO for NO)',
+      default: true
+    }
   ]
 }
 
-async function askTimeToCut() {
+async function askTimeToCut(content) {
   const answers = await inquirer.prompt(questions.timesToCut)
 
-  state.cuts.push({
-    start: answers.startTimeToCut,
-    end: answers.endTimeToCut
-  })
+  content.intervals.push([answers.startTimeToCut, answers.endTimeToCut])
 
   if (answers.askAgain) {
-    await askTimeToCut()
+    await askTimeToCut(content)
   }
+
+  return content
 }
 
-export async function ask() {
+export async function ask(content) {
   const { ask } = await inquirer.prompt(questions.initial)
 
   if (ask) {
     const { fileName } = await inquirer.prompt(questions.videoFile)
 
-    state.input = fileName
-    state.cuts = []
+    content.input = fileName
+    content.intervals = []
 
-    await askTimeToCut()
+    content = await askTimeToCut(content)
+
+    const { concat } = await inquirer.prompt(questions.concatenateFiles)
+    content.concat = concat
   }
+
+  return content
 }
